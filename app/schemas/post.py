@@ -15,6 +15,7 @@ class PostMetadata(BaseModel):
     date: datetime | None = None
     tags: list[str] = Field(default_factory=list)
     published: bool = True
+    reading_time_minutes: int = 1
 
 
 class Post(PostMetadata):
@@ -28,4 +29,11 @@ class PostList(BaseModel):
     """Response model for list of posts."""
 
     posts: list[PostMetadata]
+    total: int
+
+
+class TagList(BaseModel):
+    """Response model for list of tags."""
+
+    tags: list[str]
     total: int
