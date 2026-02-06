@@ -81,6 +81,25 @@ def find_post_file(posts_dir: Path, slug: str) -> Path | None:
     if folder_path.exists():
         return folder_path
 
+    # Check for date-prefixed folders (posts/YYYY-MM-DD-slug/README.md)
+    for folder in posts_dir.iterdir():
+        if folder.is_dir() and folder.name.endswith(slug):
+            readme_path = folder / "README.md"
+            if readme_path.exists():
+                return readme_path
+
+    # Search folders by frontmatter slug
+    for folder in posts_dir.iterdir():
+        if folder.is_dir():
+            readme_path = folder / "README.md"
+            if readme_path.exists():
+                try:
+                    post = frontmatter.load(readme_path)
+                    if post.get("slug") == slug:
+                        return readme_path
+                except Exception:
+                    pass
+
     # Fall back to flat structure (posts/slug.md)
     flat_path = posts_dir / f"{slug}.md"
     if flat_path.exists():
