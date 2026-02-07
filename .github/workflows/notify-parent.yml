@@ -1,0 +1,17 @@
+name: Notify Parent Repo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger parent repo submodule update
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.PARENT_REPO_PAT }}" \
+            https://api.github.com/repos/taylorzhangyx/tayzhang-app/dispatches \
+            -d '{"event_type":"submodule-updated","client_payload":{"submodule":"tayzhang-py-backend","sha":"${{ github.sha }}"}}'
